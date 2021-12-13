@@ -12,7 +12,8 @@
       - nrpe
       - nagios-plugins-all
       - nagios-plugins-uptime
-# comment out a line : https://www.mydailytutorials.com/uncommentcomment-lines-files-using-ansible/
+# comment out a line :
+#   https://www.mydailytutorials.com/uncommentcomment-lines-files-using-ansible/
 # allowed hosts will be in configured in a config file in /etc/nrpe.d/
 - name: ensure nrpe is configured - part 01 - main config file
   replace:
