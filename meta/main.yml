@@ -39,9 +39,7 @@ galaxy_info:
   #   - 7
   #   - 99.99
   platforms:
-    - name:
-        - EL
-        - Fedora
+    - name: EL
 
   galaxy_tags: []
     # List tags for your role here, one per line. A tag is a keyword that describes
