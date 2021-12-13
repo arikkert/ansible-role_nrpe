@@ -1,7 +1,7 @@
 galaxy_info:
   role_name: nrpe
   author: Andre Rikkert de Koe
-  description: nrpe op linux hosts
+  description: nrpe on linux hosts
   company: ARK-ICT
 
   # If the issue tracker for your role is not on github, uncomment the
