@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: nrpe
   author: Andre Rikkert de Koe
   description: nrpe op linux hosts
   company: ARK-ICT
