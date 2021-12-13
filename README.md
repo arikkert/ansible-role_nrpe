@@ -1,7 +1,7 @@
 Role Name : role_nrpe
 =========
 
-have nrpe installed and configured
+have *nrpe* installed and configured
 
 Requirements
 ------------
@@ -12,7 +12,7 @@ Repos powertools and epel-testing are available
 Role Variables
 --------------
 
-nagios: the host that runs nagios that connects to this NRPE. defaults to "nagios"
+nagios: the host that runs nagios that connects to this NRPE. defaults to *nagios*
 
 Dependencies
 ------------
@@ -34,5 +34,5 @@ BSD
 Author Information
 ------------------
 
-ARK-ICT
-Andre Rikkert de Koe - ICT
+    ARK-ICT
+    Andre Rikkert de Koe - ICT
