@@ -1,0 +1,5 @@
+---
+# defaults file for role-nrpe
+
+# adapt this to your site
+nagios: nagios

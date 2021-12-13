@@ -1,0 +1,7 @@
+---
+# handlers file for role-nrpe
+
+- name: nrpe reload
+  service:
+    name: nrpe
+    state: reloaded
