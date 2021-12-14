@@ -6,8 +6,8 @@ have *nrpe* installed and configured
 Requirements
 ------------
 
-CentOS 7 or higher
-Repos powertools and epel-testing are available
+CentOS 7 or higher   
+Repos powertools and epel-testing are available   
 
 Role Variables
 --------------
