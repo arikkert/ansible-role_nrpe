@@ -2,7 +2,7 @@
 # tasks file for role-nrpe
 #
 
-- name: ensure packages are installed for RH8/9
+- name: ensure packages are installed for CentOS 8/9
   dnf:
     enablerepo:
       - powertools
@@ -13,7 +13,7 @@
       - nagios-plugins-all
       - nagios-plugins-uptime
   when: ansible_distribution == 'CentOS' and ansible_distribution_major_version >= '8'
-- name: ensure packages are installed for RH7
+- name: ensure packages are installed for CentOS 7
   yum:
     name:
       - nrpe-selinux
