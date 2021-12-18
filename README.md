@@ -7,7 +7,7 @@ Requirements
 ------------
 
 CentOS 7 or higher   
-Repos powertools and epel-testing are available   
+Repos *powertools* and *epel-testing* are available   
 
 Role Variables
 --------------
