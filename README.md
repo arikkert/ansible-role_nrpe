@@ -12,7 +12,7 @@ Repos powertools and epel-testing are available
 Role Variables
 --------------
 
-nagios: the host that runs nagios that connects to this NRPE. defaults to *nagios*
+*nagios*: the host that runs nagios that connects to this NRPE. defaults to *nagios*
 
 Dependencies
 ------------
@@ -22,9 +22,11 @@ A list of other roles hosted on Galaxy should go here, plus any details in regar
 Example Playbook
 ----------------
 
-    - hosts: podman
+    - hosts: host01
       roles:
-         - role_nrpe
+         - arikkert.nrpe
+
+Example of a script that uses this role : https://github.com/arikkert/ansible-docker
 
 License
 -------
