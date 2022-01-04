@@ -3,6 +3,8 @@ Role Name : role_nrpe
 
 have *nrpe* installed and configured
 
+Galaxy : yes
+
 Requirements
 ------------
 
