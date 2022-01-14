@@ -28,7 +28,7 @@ Example Playbook
       roles:
          - arikkert.nrpe
 
-Example of a script that uses this role : https://github.com/arikkert/ansible-docker
+Example of a script that uses this role : https://github.com/arikkert/ansible-dockerhost
 
 License
 -------
