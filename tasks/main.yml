@@ -2,7 +2,7 @@
 # tasks file for role-nrpe
 #
 
-- name: ensure packages are installed for CentOS 8/9
+- name: ensure packages are installed for RedHat 8/9
   dnf:
     enablerepo:
       - powertools
@@ -12,15 +12,15 @@
       - nrpe
       - nagios-plugins-all
       - nagios-plugins-uptime
-  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version >= '8'
-- name: ensure packages are installed for CentOS 7
+  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) >= 8
+- name: ensure packages are installed for RedHat 7
   yum:
     name:
       - nrpe-selinux
       - nrpe
       - nagios-plugins-all
       - nagios-plugins-uptime
-  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version < '8'
+  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) < 8
 # comment out a line :
 #   https://www.mydailytutorials.com/uncommentcomment-lines-files-using-ansible/
 # allowed hosts will be in configured in a config file in /etc/nrpe.d/
