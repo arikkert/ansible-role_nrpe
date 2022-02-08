@@ -1,5 +1,5 @@
-Role Name : role_nrpe
-=========
+Role purpose
+============
 
 have *nrpe* installed and configured
 
@@ -8,8 +8,9 @@ Galaxy : yes
 Requirements
 ------------
 
-CentOS 7 or higher   
-Repos *powertools* and *epel-testing* are available   
+RedHat compatible 7 or higher, CentOS, Almalinux, Rockylinux.
+Tested on CentOS 7/8.
+Repos *powertools* and *epel-testing* are available.
 
 Role Variables
 --------------
