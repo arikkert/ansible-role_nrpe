@@ -3,7 +3,7 @@
 #
 
 - name: ensure packages are installed for RedHat 8/9
-  dnf:
+  ansible.builtin.dnf:
     enablerepo:
       - powertools
       - epel-testing
@@ -14,7 +14,7 @@
       - nagios-plugins-uptime
   when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) >= 8
 - name: ensure packages are installed for RedHat 7
-  yum:
+  ansible.builtin.yum:
     name:
       - nrpe-selinux
       - nrpe
@@ -25,14 +25,14 @@
 #   https://www.mydailytutorials.com/uncommentcomment-lines-files-using-ansible/
 # allowed hosts will be in configured in a config file in /etc/nrpe.d/
 - name: ensure nrpe is configured - part 01 - main config file
-  replace:
+  ansible.builtin.replace:
     path: /etc/nagios/nrpe.cfg
     regexp: '^allowed_hosts=(.*)'
     replace: '#allowed_hosts=\1 # Line managed by Ansible'
     backup: true
   notify: nrpe reload
 - name: ensure npre is configured - part 02a - define some checks
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: /etc/nrpe.d/
     mode: 0644
@@ -41,7 +41,7 @@
     - common.cfg
     - check_sestatus.cfg
 - name: ensure npre is configured - part 02b - define allowed_hosts
-  template:
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: /etc/nrpe.d/allowed_hosts.cfg
     mode: 0644
@@ -49,7 +49,7 @@
   loop:
     - allowed_hosts.cfg.j2
 - name: ensure nrpe is configured - part 03 - add extra plugin
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: /usr/lib64/nagios/plugins/
     mode: 0755
@@ -57,12 +57,12 @@
   loop:
     - check_sestatus
 - name: ensure nrpe is running
-  service:
+  ansible.builtin.service:
     name: nrpe
     state: started
     enabled: true
 - name: ensure firewall is configured to allow nrpe requests
-  firewalld:
+  ansible.builtin.firewalld:
     state: enabled
     port: "{{ item }}"
     immediate: true
