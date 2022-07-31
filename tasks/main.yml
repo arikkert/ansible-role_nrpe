@@ -2,7 +2,20 @@
 # tasks file for role-nrpe
 #
 
-- name: ensure packages are installed for RedHat 8/9
+- name: ensure packages are installed for RedHat 9
+  ansible.builtin.dnf:
+    name:
+      - nrpe-selinux
+      - nrpe
+      - nagios-plugins-disk
+      - nagios-plugins-dns
+      - nagios-plugins-swap
+      - nagios-plugins-smtp
+      - nagios-plugins-users
+      - nagios-plugins-load
+      - nagios-plugins-uptime
+  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) == 9
+- name: ensure packages are installed for RedHat 8
   ansible.builtin.dnf:
     enablerepo:
       - powertools
@@ -12,7 +25,7 @@
       - nrpe
       - nagios-plugins-all
       - nagios-plugins-uptime
-  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) >= 8
+  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) == 8
 - name: ensure packages are installed for RedHat 7
   ansible.builtin.yum:
     name:
@@ -20,7 +33,7 @@
       - nrpe
       - nagios-plugins-all
       - nagios-plugins-uptime
-  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) < 8
+  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) == 7
 # comment out a line :
 #   https://www.mydailytutorials.com/uncommentcomment-lines-files-using-ansible/
 # allowed hosts will be in configured in a config file in /etc/nrpe.d/
@@ -61,13 +74,25 @@
     name: nrpe
     state: started
     enabled: true
-- name: ensure firewall is configured to allow nrpe requests
+- name: ensure firewall is permanently configured to allow nrpe requests
+  ansible.builtin.firewalld:
+    state: enabled
+    port: "{{ item }}"
+    permanent: true
+  loop:
+    - 5666/tcp
+- name: ensure status firewalld is saved
+  ansible.builtin.command: systemctl status firewalld
+  register: firewall_status
+  changed_when: false
+  failed_when: false
+- name: ensure firewall is immediately configured to allow nrpe requests when already running
   ansible.builtin.firewalld:
     state: enabled
     port: "{{ item }}"
     immediate: true
-    permanent: true
   loop:
     - 5666/tcp
+  when: firewall_status.rc == 0
 
 ...
