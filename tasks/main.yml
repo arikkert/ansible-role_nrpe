@@ -2,7 +2,7 @@
 # tasks file for role-nrpe
 #
 
-- name: ensure packages are installed for RedHat 9
+- name: Ensure packages are installed for RedHat 9
   ansible.builtin.dnf:
     name:
       - nrpe-selinux
@@ -15,7 +15,7 @@
       - nagios-plugins-load
       - nagios-plugins-uptime
   when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) == 9
-- name: ensure packages are installed for RedHat 8
+- name: Ensure packages are installed for RedHat 8
   ansible.builtin.dnf:
     enablerepo:
       - powertools
@@ -26,7 +26,7 @@
       - nagios-plugins-all
       - nagios-plugins-uptime
   when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) == 8
-- name: ensure packages are installed for RedHat 7
+- name: Ensure packages are installed for RedHat 7
   ansible.builtin.yum:
     name:
       - nrpe-selinux
@@ -37,14 +37,14 @@
 # comment out a line :
 #   https://www.mydailytutorials.com/uncommentcomment-lines-files-using-ansible/
 # allowed hosts will be in configured in a config file in /etc/nrpe.d/
-- name: ensure nrpe is configured - part 01 - main config file
+- name: Ensure nrpe is configured - part 01 - main config file
   ansible.builtin.replace:
     path: /etc/nagios/nrpe.cfg
     regexp: '^allowed_hosts=(.*)'
     replace: '#allowed_hosts=\1 # Line managed by Ansible'
     backup: true
   notify: nrpe reload
-- name: ensure npre is configured - part 02a - define some checks
+- name: Ensure npre is configured - part 02a - define some checks
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: /etc/nrpe.d/
@@ -53,7 +53,7 @@
   loop:
     - common.cfg
     - check_sestatus.cfg
-- name: ensure npre is configured - part 02b - define allowed_hosts
+- name: Ensure npre is configured - part 02b - define allowed_hosts
   ansible.builtin.template:
     src: "{{ item }}"
     dest: /etc/nrpe.d/allowed_hosts.cfg
@@ -61,7 +61,7 @@
   notify: nrpe reload
   loop:
     - allowed_hosts.cfg.j2
-- name: ensure nrpe is configured - part 03 - add extra plugin
+- name: Ensure nrpe is configured - part 03 - add extra plugin
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: /usr/lib64/nagios/plugins/
@@ -69,24 +69,24 @@
   notify: nrpe reload
   loop:
     - check_sestatus
-- name: ensure nrpe is running
+- name: Ensure nrpe is running
   ansible.builtin.service:
     name: nrpe
     state: started
     enabled: true
-- name: ensure firewall is permanently configured to allow nrpe requests
+- name: Ensure firewall is permanently configured to allow nrpe requests
   ansible.builtin.firewalld:
     state: enabled
     port: "{{ item }}"
     permanent: true
   loop:
     - 5666/tcp
-- name: ensure status firewalld is saved
+- name: Ensure status firewalld is saved
   ansible.builtin.command: systemctl status firewalld
   register: firewall_status
   changed_when: false
   failed_when: false
-- name: ensure firewall is immediately configured to allow nrpe requests when already running
+- name: Ensure firewall is immediately configured to allow nrpe requests when already running
   ansible.builtin.firewalld:
     state: enabled
     port: "{{ item }}"
