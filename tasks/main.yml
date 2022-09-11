@@ -43,13 +43,13 @@
     regexp: '^allowed_hosts=(.*)'
     replace: '#allowed_hosts=\1 # Line managed by Ansible'
     backup: true
-  notify: nrpe reload
+  notify: Handler nrpe reload
 - name: Ensure npre is configured - part 02a - define some checks
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: /etc/nrpe.d/
     mode: 0644
-  notify: nrpe reload
+  notify: Handler nrpe reload
   loop:
     - common.cfg
     - check_sestatus.cfg

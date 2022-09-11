@@ -1,7 +1,7 @@
 ---
 # handlers file for role-nrpe
 
-- name: nrpe reload
+- name: Handler nrpe reload
   ansible.builtin.service:
     name: nrpe
     state: reloaded
