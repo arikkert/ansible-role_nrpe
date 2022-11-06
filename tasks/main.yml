@@ -58,7 +58,7 @@
     src: "{{ item }}"
     dest: /etc/nrpe.d/allowed_hosts.cfg
     mode: 0644
-  notify: nrpe reload
+  notify: Handler nrpe reload
   loop:
     - allowed_hosts.cfg.j2
 - name: Ensure nrpe is configured - part 03 - add extra plugin
@@ -66,7 +66,7 @@
     src: "{{ item }}"
     dest: /usr/lib64/nagios/plugins/
     mode: 0755
-  notify: nrpe reload
+  notify: Handler nrpe reload
   loop:
     - check_sestatus
 - name: Ensure nrpe is running
