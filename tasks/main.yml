@@ -53,6 +53,7 @@
   loop:
     - common.cfg
     - check_sestatus.cfg
+    - check_reboot-required.cfg
 - name: Ensure npre is configured - part 02b - define allowed_hosts
   ansible.builtin.template:
     src: "{{ item }}"
@@ -69,6 +70,7 @@
   notify: Handler nrpe reload
   loop:
     - check_sestatus
+    - check_reboot-required
 - name: Ensure nrpe is running
   ansible.builtin.service:
     name: nrpe
