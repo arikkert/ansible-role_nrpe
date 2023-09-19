@@ -2,18 +2,32 @@
 # tasks file for role-nrpe
 #
 
-- name: Ensure packages are installed for RedHat 9
-  ansible.builtin.dnf:
-    name:
-      - nrpe-selinux
-      - nrpe
-      - nagios-plugins-disk
-      - nagios-plugins-dns
-      - nagios-plugins-swap
-      - nagios-plugins-smtp
-      - nagios-plugins-users
-      - nagios-plugins-load
-      - nagios-plugins-uptime
+
+- name: RedHat 9 block
+  block:
+    - name: Ensure EPEL packages can be installed for RedHat 9
+      ansible.builtin.dnf:
+        name:
+          - yum-utils
+    - name: Enable crb repository for RedHat 9
+      command: dnf config-manager --set-enabled crb
+      changed_when: false
+    - name: Ensure EPEL repo is installed for RedHat 9
+      ansible.builtin.dnf:
+        name:
+          - epel-release
+    - name: Ensure packages are installed for RedHat 9
+      ansible.builtin.dnf:
+        name:
+          - nrpe-selinux
+          - nrpe
+          - nagios-plugins-disk
+          - nagios-plugins-dns
+          - nagios-plugins-swap
+          - nagios-plugins-smtp
+          - nagios-plugins-users
+          - nagios-plugins-load
+          - nagios-plugins-uptime
   when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) == 9
 - name: Ensure packages are installed for RedHat 8
   ansible.builtin.dnf:
