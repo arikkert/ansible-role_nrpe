@@ -170,7 +170,7 @@ function CheckDebianRebootRequired() {
 	fi
 }
 function CheckRedHatRebootRequired() {
-	LAST_KERNEL=`/bin/rpm -q --last kernel | /usr/bin/head -1 | /usr/bin/perl -pe 's/^kernel-(\S+).*/$1/'`
+	LAST_KERNEL=$(/bin/rpm -q --last kernel | /usr/bin/head -1 | sed s/^kernel-// | cut -d " " -f 1)
 	RUNNING_KERNEL=`uname -r`
 
 	if [[ $LAST_KERNEL != $RUNNING_KERNEL ]];	then
