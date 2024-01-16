@@ -2,15 +2,25 @@
 # tasks file for role-nrpe
 #
 
+- name: Debian OS family
+  when: ansible_os_family == 'Debian'
+  block:
+    - name: Ensure packages are installed for Debian OS family
+      ansible.builtin.apt:
+        name:
+          - nagios-nrpe-server
+          - monitoring-plugins-contrib
+          - monitoring-plugins-standard
 
 - name: RedHat 9 block
+  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) == 9
   block:
     - name: Ensure EPEL packages can be installed for RedHat 9
       ansible.builtin.dnf:
         name:
           - yum-utils
     - name: Enable crb repository for RedHat 9
-      command: dnf config-manager --set-enabled crb
+      ansible.builtin.command: dnf config-manager --set-enabled crb
       changed_when: false
     - name: Ensure EPEL repo is installed for RedHat 9
       ansible.builtin.dnf:
@@ -28,7 +38,7 @@
           - nagios-plugins-users
           - nagios-plugins-load
           - nagios-plugins-uptime
-  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) == 9
+
 - name: Ensure packages are installed for RedHat 8
   ansible.builtin.dnf:
     enablerepo:
@@ -48,67 +58,93 @@
       - nagios-plugins-all
       - nagios-plugins-uptime
   when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) == 7
-# comment out a line :
-#   https://www.mydailytutorials.com/uncommentcomment-lines-files-using-ansible/
-# allowed hosts will be in configured in a config file in /etc/nrpe.d/
-- name: Ensure nrpe is configured - part 01 - main config file
-  ansible.builtin.replace:
-    path: /etc/nagios/nrpe.cfg
-    regexp: '^allowed_hosts=(.*)'
-    replace: '#allowed_hosts=\1 # Line managed by Ansible'
-    backup: true
-  notify: Handler nrpe reload
-- name: Ensure npre is configured - part 02a - define some checks
-  ansible.builtin.copy:
-    src: "{{ item }}"
-    dest: /etc/nrpe.d/
-    mode: 0644
-  notify: Handler nrpe reload
-  loop:
-    - common.cfg
-    - check_sestatus.cfg
-    - check_reboot-required.cfg
-- name: Ensure npre is configured - part 02b - define allowed_hosts
-  ansible.builtin.template:
-    src: "{{ item }}"
-    dest: /etc/nrpe.d/allowed_hosts.cfg
-    mode: 0644
-  notify: Handler nrpe reload
-  loop:
-    - allowed_hosts.cfg.j2
-- name: Ensure nrpe is configured - part 03 - add extra plugin
-  ansible.builtin.copy:
-    src: "{{ item }}"
-    dest: /usr/lib64/nagios/plugins/
-    mode: 0755
-  notify: Handler nrpe reload
-  loop:
-    - check_sestatus
-    - check_reboot-required
-- name: Ensure nrpe is running
-  ansible.builtin.service:
-    name: nrpe
-    state: started
-    enabled: true
-- name: Ensure firewall is permanently configured to allow nrpe requests
-  ansible.builtin.firewalld:
-    state: enabled
-    port: "{{ item }}"
-    permanent: true
-  loop:
-    - 5666/tcp
-- name: Ensure status firewalld is saved
-  ansible.builtin.command: systemctl status firewalld
-  register: firewall_status
-  changed_when: false
-  failed_when: false
-- name: Ensure firewall is immediately configured to allow nrpe requests when already running
-  ansible.builtin.firewalld:
-    state: enabled
-    port: "{{ item }}"
-    immediate: true
-  loop:
-    - 5666/tcp
-  when: firewall_status.rc == 0
+
+- name: RedHat
+  when: ansible_os_family == 'RedHat'
+  block:
+
+    # comment out a line :
+    #   https://www.mydailytutorials.com/uncommentcomment-lines-files-using-ansible/
+    # allowed hosts will be in configured in a config file in /etc/nrpe.d/
+    - name: Ensure nrpe is configured - part 01 - main config file
+      ansible.builtin.replace:
+        path: /etc/nagios/nrpe.cfg
+        regexp: '^allowed_hosts=(.*)'
+        replace: '#allowed_hosts=\1 # Line managed by Ansible'
+        backup: true
+      notify: Handler nrpe reload
+    - name: Ensure npre is configured - part 02a - define some checks
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: /etc/nrpe.d/
+        mode: "0644"
+      notify: Handler nrpe reload
+      loop:
+        - common.cfg
+        - check_sestatus.cfg
+        - check_reboot-required.cfg
+    - name: Ensure npre is configured - part 02b - define allowed_hosts
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: /etc/nrpe.d/{{ item }}
+        mode: "0644"
+      notify: Handler nrpe reload
+      loop:
+        - allowed_hosts.cfg
+    - name: Ensure nrpe is configured - part 03 - add extra plugin
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: /usr/lib64/nagios/plugins/
+        mode: "0755"
+      notify: Handler nrpe reload
+      loop:
+        - check_sestatus
+        - check_reboot-required
+    - name: Ensure nrpe is running
+      ansible.builtin.service:
+        name: nrpe
+        state: started
+        enabled: true
+    - name: Ensure firewall is permanently configured to allow nrpe requests
+      ansible.posix.firewalld:
+        state: enabled
+        port: "{{ item }}"
+        permanent: true
+      loop:
+        - 5666/tcp
+    - name: Ensure status firewalld is saved
+      ansible.builtin.command: systemctl status firewalld
+      register: firewall_status
+      changed_when: false
+      failed_when: false
+    - name: Ensure firewall is immediately configured to allow nrpe requests when already running
+      ansible.posix.firewalld:
+        state: enabled
+        port: "{{ item }}"
+        immediate: true
+      loop:
+        - 5666/tcp
+      when: firewall_status.rc == 0
+
+- name: Debian
+  when: ansible_os_family == 'Debian'
+  block:
+
+    - name: Ensure npre is configured - part 02a - define some checks
+      ansible.builtin.copy:
+        src: "{{ item }}.Debian"
+        dest: /etc/nagios/nrpe.d/{{ item }}
+        mode: "0644"
+      notify: Handler nrpe reload Debian
+      loop:
+        - common.cfg
+    - name: Ensure npre is configured - part 02b - define allowed_hosts
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: /etc/nagios/nrpe.d/{{ item }}
+        mode: "0644"
+      notify: Handler nrpe reload Debian
+      loop:
+        - allowed_hosts.cfg
 
 ...
