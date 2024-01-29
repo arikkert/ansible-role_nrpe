@@ -17,8 +17,8 @@ Repos *powertools* and *epel-testing* are available for Centos 8
 Role Variables
 --------------
 
- *nagios*: the host that runs nagios that connects to this NRPE. defaults to *nagios*
- *sestatus*: SElinux mode, defaults to *Enforcing*. Only applicable for RedHat OS family
+- *nagios*: the host that runs nagios that connects to this NRPE. defaults to *nagios*
+- *sestatus*: SElinux mode, defaults to *Enforcing*. Only applicable for RedHat OS family
 
 Dependencies
 ------------
