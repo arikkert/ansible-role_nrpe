@@ -17,7 +17,8 @@ Repos *powertools* and *epel-testing* are available for Centos 8
 Role Variables
 --------------
 
-*nagios*: the host that runs nagios that connects to this NRPE. defaults to *nagios*
+ *nagios*: the host that runs nagios that connects to this NRPE. defaults to *nagios*
+ *sestatus*: SElinux mode, defaults to *Enforcing*. Only applicable for RedHat OS family
 
 Dependencies
 ------------
@@ -30,6 +31,8 @@ Example Playbook
     - hosts: host01
       roles:
          - arikkert.nrpe
+           vars:
+             selinux: Permissive
 
 Example of a script that uses this role : https://github.com/arikkert/ansible-dockerhost
 

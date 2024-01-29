@@ -3,3 +3,4 @@
 
 # adapt this to your site
 nagios: nagios
+sestatus: Enforcing
