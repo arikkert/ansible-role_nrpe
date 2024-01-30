@@ -100,6 +100,7 @@
       loop:
         - check_sestatus
         - check_reboot-required
+        - check_service.sh
     - name: Ensure nrpe is running
       ansible.builtin.service:
         name: nrpe
@@ -146,5 +147,13 @@
       notify: Handler nrpe reload Debian
       loop:
         - allowed_hosts.cfg
+    - name: Ensure nrpe is configured - part 03 - add extra plugin
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: /usr/lib/nagios/plugins/
+        mode: "0755"
+      notify: Handler nrpe reload
+      loop:
+        - check_service.sh
 
 ...
