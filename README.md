@@ -32,7 +32,7 @@ Example Playbook
       roles:
          - arikkert.nrpe
            vars:
-             selinux: Permissive
+             sestatus: Permissive
 
 Example of a script that uses this role : https://github.com/arikkert/ansible-dockerhost
 

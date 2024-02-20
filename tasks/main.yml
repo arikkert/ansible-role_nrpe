@@ -101,6 +101,20 @@
         - check_sestatus
         - check_reboot-required
         - check_service.sh
+        - check_sudoers.sh
+    - name: Ensure nrpe_user has permissions (via sudo) to check sudoers config
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: /etc/sudoers.d/{{ item }}
+        mode: '0440'
+        validate: visudo -cf %s
+      loop:
+        - check_sudoers # name of the user cannot be used in the filename here cause its dependent of OS family
+    - name: Ensure SElinux allows nrpe to use sudo
+      ansible.posix.seboolean:
+        name: nagios_run_sudo
+        state: true
+        persistent: true
     - name: Ensure nrpe is running
       ansible.builtin.service:
         name: nrpe
@@ -134,7 +148,7 @@
     - name: Ensure npre is configured - part 02b - define allowed_hosts and common checks
       ansible.builtin.template:
         src: "{{ item }}.j2"
-        dest: /etc/nagios/nrpe.d/{{ item }}
+        dest: /etc/nagios/nrpe.d/
         mode: "0644"
       notify: Handler nrpe reload Debian
       loop:
@@ -148,5 +162,6 @@
       notify: Handler nrpe reload
       loop:
         - check_service.sh
+        - check_sudoers.sh
 
 ...
