@@ -110,6 +110,10 @@
         validate: visudo -cf %s
       loop:
         - check_sudoers # name of the user cannot be used in the filename here cause its dependent of OS family
+    - name: Ensure ansible.posix.seboolean dependency is installed
+      ansible.builtin.dnf:
+        name:
+          - python3-libsemanage.x86_64
     - name: Ensure SElinux allows nrpe to use sudo
       ansible.posix.seboolean:
         name: nagios_run_sudo
