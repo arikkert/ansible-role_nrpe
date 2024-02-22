@@ -152,7 +152,7 @@
     - name: Ensure npre is configured - part 02b - define allowed_hosts and common checks
       ansible.builtin.template:
         src: "{{ item }}.j2"
-        dest: /etc/nagios/nrpe.d/
+        dest: /etc/nagios/nrpe.d/{{ item }}
         mode: "0644"
       notify: Handler nrpe reload Debian
       loop:
