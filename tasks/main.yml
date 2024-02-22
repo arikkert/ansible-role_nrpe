@@ -167,5 +167,12 @@
       loop:
         - check_service.sh
         - check_sudoers.sh
-
+    - name: Ensure nrpe_user has permissions (via sudo) to check sudoers config
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: /etc/sudoers.d/{{ item }}
+        mode: '0440'
+        validate: visudo -cf %s
+      loop:
+        - check_sudoers # name of the user cannot be used in the filename here cause its dependent of OS family
 ...
