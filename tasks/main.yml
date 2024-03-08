@@ -74,7 +74,7 @@
           - nagios-plugins-all
           - nagios-plugins-uptime
     - name: Ensure ansible.posix.seboolean dependency is installed
-      ansible.builtin.dnf:
+      ansible.builtin.yum:
         name:
           - libsemanage-python.x86_64
 
