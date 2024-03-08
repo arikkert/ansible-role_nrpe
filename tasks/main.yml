@@ -38,26 +38,49 @@
           - nagios-plugins-users
           - nagios-plugins-load
           - nagios-plugins-uptime
+    - name: Ensure ansible.posix.seboolean dependency is installed
+      ansible.builtin.dnf:
+        name:
+          - python3-libsemanage.x86_64
 
-- name: Ensure packages are installed for RedHat 8
-  ansible.builtin.dnf:
-    enablerepo:
-      - powertools
-      - epel-testing
-    name:
-      - nrpe-selinux
-      - nrpe
-      - nagios-plugins-all
-      - nagios-plugins-uptime
-  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) == 8
-- name: Ensure packages are installed for RedHat 7
-  ansible.builtin.yum:
-    name:
-      - nrpe-selinux
-      - nrpe
-      - nagios-plugins-all
-      - nagios-plugins-uptime
-  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) == 7
+- name: RedHat 8 block
+  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) ==  8
+  block:
+
+    - name: Ensure packages are installed for RedHat 8
+      ansible.builtin.dnf:
+        enablerepo:
+          - powertools
+          - epel-testing
+        name:
+          - nrpe-selinux
+          - nrpe
+          - nagios-plugins-all
+          - nagios-plugins-uptime
+    - name: Ensure ansible.posix.seboolean dependency is installed
+      ansible.builtin.dnf:
+        name:
+          - python3-libsemanage.x86_64
+
+- name: RedHat 7 block
+  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) ==  7
+  block:
+
+    - name: Ensure packages are installed for RedHat 7
+      ansible.builtin.yum:
+        name:
+          - nrpe-selinux
+          - nrpe
+          - nagios-plugins-all
+          - nagios-plugins-uptime
+    - name: Ensure ansible.posix.seboolean dependency is installed
+      ansible.builtin.dnf:
+        name:
+          - libsemanage-python.x86_64
+
+#
+# RedHat all versions
+#
 
 - name: RedHat
   when: ansible_os_family == 'RedHat'
@@ -110,10 +133,6 @@
         validate: visudo -cf %s
       loop:
         - check_sudoers # name of the user cannot be used in the filename here cause its dependent of OS family
-    - name: Ensure ansible.posix.seboolean dependency is installed
-      ansible.builtin.yum:
-        name:
-          - python3-libsemanage.x86_64
     - name: Ensure SElinux allows nrpe to use sudo
       ansible.posix.seboolean:
         name: nagios_run_sudo
@@ -144,6 +163,10 @@
       loop:
         - 5666/tcp
       when: firewall_status.rc == 0
+
+#
+# Debian
+#
 
 - name: Debian
   when: ansible_os_family == 'Debian'
