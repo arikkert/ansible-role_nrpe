@@ -141,27 +141,21 @@
         name: nrpe
         state: started
         enabled: true
-    - name: Ensure firewall is permanently configured to allow nrpe requests
-      ansible.posix.firewalld:
-        state: enabled
-        port: "{{ item }}"
-        permanent: true
-      loop:
-        - 5666/tcp
-    - name: Ensure status firewalld is saved
+    - name: Ensure status firewalld is registered
       ansible.builtin.command: systemctl status firewalld
-      register: firewall_status
+      register: firewalld_status
       changed_when: false
       failed_when: false
       check_mode: false
-    - name: Ensure firewall is immediately configured to allow nrpe requests when already running
+    - name: Ensure when firewalld already running it is immediately configured to allow nrpe requests
       ansible.posix.firewalld:
         state: enabled
         port: "{{ item }}"
         immediate: true
+        permanent: true
       loop:
         - 5666/tcp
-      when: firewall_status.rc == 0
+      when: firewalld_status.rc == 0
 
 #
 # Configure
