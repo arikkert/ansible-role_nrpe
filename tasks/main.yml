@@ -123,6 +123,7 @@
         - check_reboot-required
         - check_service.sh
         - check_sudoers.sh
+        - check_mountpoints.sh
     - name: Ensure nrpe_user has permissions (via sudo) to check sudoers config
       ansible.builtin.template:
         src: "{{ item }}.j2"
@@ -185,6 +186,7 @@
         - check_reboot-required
         - check_service.sh
         - check_sudoers.sh
+        - check_mountpoints.sh
     - name: Ensure nrpe_user has permissions (via sudo) to check sudoers config
       ansible.builtin.template:
         src: "{{ item }}.j2"
