@@ -17,7 +17,7 @@
           - monitoring-plugins-standard
 
 - name: RedHat 9 block
-  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) == 9
+  when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) >= 9
   block:
     - name: Ensure EPEL packages can be installed for RedHat 9
       ansible.builtin.dnf:
@@ -137,6 +137,7 @@
         name: nagios_run_sudo
         state: true
         persistent: true
+      when: (ansible_distribution_major_version | int) != 10
     - name: Ensure nrpe is running
       ansible.builtin.service:
         name: nrpe

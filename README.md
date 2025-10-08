@@ -9,9 +9,9 @@ Requirements
 ------------
 
 RedHat compatible 7 or higher, CentOS, Almalinux, Rockylinux.
-Tested on CentOS 7/8 and Almalinux 9
+Tested on CentOS 7/8 and Almalinux 9/10
 Debian/Ubuntu.
-Tested on Debian 12 and Ubuntu 22.04
+Tested on Debian 12 and Ubuntu 22.04/24.04
 Repos *powertools* and *epel-testing* are available for Centos 8
 
 Role Variables
