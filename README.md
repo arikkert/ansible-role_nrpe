@@ -1,5 +1,5 @@
-Role purpose
-============
+nrpe
+====
 
 have *nrpe* installed and configured
 
