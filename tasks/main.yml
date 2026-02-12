@@ -42,10 +42,16 @@
           - nagios-plugins-users
           - nagios-plugins-load
           - nagios-plugins-uptime
-    - name: Ensure ansible.posix.seboolean dependency is installed
+    - name: Ensure ansible.posix.seboolean dependency is installed for rhel9
       ansible.builtin.dnf:
         name:
           - python3-libsemanage.x86_64
+      when: ansible_distribution_major_version == 9
+    - name: Ensure ansible.posix.seboolean dependency is installed for rhel10
+      ansible.builtin.dnf:
+        name:
+          - python3-libsemanage_v2.x86_64
+      when: ansible_distribution_major_version == 10
 
 - name: RedHat 8 block
   when: ansible_os_family == 'RedHat' and (ansible_distribution_major_version | int) ==  8
